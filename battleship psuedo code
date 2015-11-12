@@ -1,0 +1,215 @@
+import headers
+
+declare globals
+declare rows and columns 10 (use 10 to make coding with 1-10 easier)
+create 2 2 dimensional arrays of int for board [row][column] 
+
+compBoard
+playerBoard
+
+enum state
+{
+EMPTY , SHIP , HIT , MISS
+}
+
+
+
+makeBoard()
+{
+	for loop row < 10
+	{
+		for loop column < 10
+		{
+			board[row][column] = 0  (make empty)
+		}
+	}
+}	
+placeCompShip()
+{
+Uses CompBoard 
+
+counter = 5 (number of ships)
+while counter > 0
+	x coordinate = (srand % 10+1) (return a number 1-10 to place on grid)
+	y coordinate = (srand % 10+1) (return a number 1-10 to place on grid)
+	shipDirectionRand = (srand % 2) (return 0 or 1, 0 is horizontal 1 is vertical)
+		if shipDirectionRand == 0, shipDirection = horizontal 
+		if shipDirectionRand == 1, shipDirection = Vertical  
+	declare shipLength = 0	counter switch (after each switch change length, use validateShips(length,shipDirection,x coord,y coord,compBool=true ) on compBoard array until true and decrement count by one)
+		case 5 -> check for 5 spaces to validate carrier
+			shipLength = 5; 
+			validateCompShip;
+			if true -> setShip
+			--counter;
+			break 
+		case 4 -> check for 4 spaces for battleship
+			" " " " "
+		case 3 -> check for 3 spaces for destroyer
+			" " " " "
+		case 2 -> check for 3 spaces for submarine
+			" " " " "
+		case 1 -> check for 2 spaces for patrol boat
+			shipLength = 1; 
+			validateCompShip;
+			if true -> setShip
+			--counter;	
+			break
+	
+
+placePlayerShip()
+{
+Uses playerBoard 
+
+counter = 5 (number of ships)
+while counter > 0
+	cout -> prompt user for x coord then y coord
+	x coordinate = user input for x coord
+	y coordinate = user input for y coord
+	shipDirection = user input prompt 0 for horizontal 1 for vertical
+		if shipDirection == 0, shipDirection = horizontal 
+		if shipDirection == 1, shipDirection = Vertical  	
+	declare shipLength = 0
+	counter switch (after each switch change length, use validateShips(length,shipDirection,x coord,y coord,compBool=false ) on playerBoard array until true and decrement count by one)
+		case 5 -> check for 5 spaces to validate carrier
+			shipLength = 5; 
+			validateShip;
+			if true -> setShip
+			--counter;
+			break 
+		case 4 -> check for 4 spaces for battleship
+			" " " " "
+		case 3 -> check for 3 spaces for destroyer
+			" " " " "
+		case 2 -> check for 3 spaces for submarine
+			" " " " "
+		case 1 -> check for 2 spaces for patrol boat
+			shipLength = 1; 
+			validateShip;
+			if true -> setShip
+			--counter;	
+			break
+
+
+}
+
+
+void setShip(length,shipDirection,x coord, y coord,compBool)
+{
+
+if compBool == True 
+	use compBoard
+if compBool = False
+	use playerBoard
+if shipDirection is vertical
+	for loop i = x coord, i < x coord+length, i++
+	{
+		board[i][y] = 1 ( makes each item in column of ship length into a SHIP instead of EMPTY)
+	}
+	for loop i = y coord, i < y coord+length,i++
+	{
+		board[x][i] = 1 (makes each item in column of ship length into a SHIP instead of EMPTY)
+	}
+}
+
+
+bool validateShips(length,shipDirection,x coord,y coord,compBool)
+{
+if compBool == true
+	use compBoard array
+if compBool == false, use playerBoard array
+	for i in length ++i
+	check if all spots for ship are valid
+	board[x+(i-1)][y] for horizontal, 
+		if [x+length][y] > 10, return false (too big)
+		if [x][y] !=0, (NOT EMPTY) return false
+	board[x][y+(i-1)] for vertical 
+		if [x][y+length] > 10, return false
+		if [x][y] != 0, (not empty) return false
+	return true if pass all tests		
+}
+
+bool gameWon()
+{
+	for loop on both boards
+		for loop x coords (rows)
+			for loop y coords (columns)
+			if board[x][y] = 1
+				return false; (if any space returns 1 then there is a ship in the board)
+
+		return true (no ship spaces left)
+	if players turn tell player they won
+	if comp turn tell player they lost
+}
+
+playerTurn()
+{
+}
+void printPlayerBoard()
+{
+	for loop on player board
+		for loop x coords (rows)
+			for loop y coords (columns)
+				cout board[x][y] + " ";
+void printCompBoard()
+{
+	for loop on comp board
+		for loop x coords (rows)
+			for loop y coords (columns)
+				cout board[x][y] + " ";
+
+void PlayerTurn
+{
+	cout -> pick an x coord
+	cin -> x
+	cout -> pick a y coord
+	cin -> y
+
+	if compBoard[x][y] == 1; (check to see if ship occupies space)
+		cout >> hit!
+		compBoard[x][y] = 2;
+	else if compBoard[x][y] == 2;
+		cout >> you already hit there, suck it
+	else if compBoard[x][y] == 0 or 3;
+		cout >> miss
+		compBoard[x][y] = 3;
+	 		
+}
+
+void compTurn
+{
+	x = srand%10+1
+	y = srand%10+1
+	if playerBoard[x][y] == 1; (check to see if ship occupies space)
+		cout >> hit!
+		playerBoard[x][y] = 2;
+	else if playerBoard[x][y]  == 2;
+		cout >> you already hit there, suck it
+	else if playerBoard[x][y] == 0 or 3;
+		cout >> miss
+		playerBoard[x][y] = 3;
+}
+
+void displayIntro
+{
+	cout >> instructions for how to play battleship, win vs lose
+}
+
+int main()
+{
+turn = 0 (player) (comp is 1)
+	makeBoard() for compBoard
+	makeBoard() for playerBoard
+	placeCompShips places validated comp ships
+	placePlayerShips places validated player ships
+	while gameWon() is false
+		if turn = 0
+			playerTurn()
+				printCompBoard()
+				printPlayerBoard()
+				turn = 1
+		if turn = 1
+			CompTurn()
+				turn = 0
+	cout >> gj you win the game or you suck and lost	
+					
+}
